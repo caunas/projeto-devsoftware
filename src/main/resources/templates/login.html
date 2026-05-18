@@ -1,0 +1,40 @@
+<!--
+AUTOR: LEONARDO
+-->
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="<http://www.thymeleaf.org>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{css/login.css}">
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="login-panel">
+            <div class="login-box">
+                <h1>Login</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="usuario">Usuário:</label>
+                        <input type="text" id="usuario" name="usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit">Entrar</button>
+                    <div class="forgot-password">
+                        <a href="#">Esqueceu a senha?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="image-panel">
+            <div class="image-placeholder">
+                <span>Imagem grande aqui</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

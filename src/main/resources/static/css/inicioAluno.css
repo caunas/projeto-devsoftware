@@ -1,0 +1,366 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    background: #f5f7f8;
+    color: #1f2937;
+}
+
+.student-page {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 100px 90px 1fr;
+    min-height: 100vh;
+}
+
+.site-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: #f8f512;
+    color: #071e49;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo-u {
+    width: 76px;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+}
+
+.logo-u img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.school-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+.school-tag {
+    font-size: 0.78rem;
+    color: #102a4c;
+}
+
+.header-title {
+    font-size: 2rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    font-size: 1.5rem;
+}
+
+.apps-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    padding: 10px 28px;
+    background: #1b2b9e;
+    border-radius: 0 0 0 0;
+    margin: 0;
+}
+
+.apps-inner {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    align-items: center;
+    color: #ffffff;
+    flex-wrap: wrap;
+}
+
+.apps-inner .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 110px;
+    color: #e6f7fb;
+    text-align: center;
+    font-weight: 600;
+}
+
+.apps-inner .app::before {
+    content: '';
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    display: block;
+    margin-bottom: 6px;
+}
+
+.side-menu {
+    grid-column: 1 / 2;
+    grid-row: 3 / 4;
+    background: transparent;
+    border-right: none;
+    padding: 28px 20px 20px;
+}
+
+.main-area {
+    grid-column: 2 / -1;
+    grid-row: 3 / 4;
+    padding: 24px 28px;
+    background: #f4f6f9;
+}
+
+.hero-card {
+    background: #ffffff;
+    border-radius: 24px;
+    min-height: 100%;
+    padding: 16px;
+    box-shadow: 0 24px 80px rgba(11, 45, 97, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-image {
+    width: 100%;
+    height: auto;
+    border-radius: 18px;
+    object-fit: cover;
+}
+
+.hero-head {
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 1rem;
+    color: #102a4c;
+    letter-spacing: 0.12em;
+}
+
+.hero-card h1 {
+    margin: 0;
+    font-size: 2.4rem;
+    color: #071e49;
+    line-height: 1.05;
+}
+
+.hero-card p {
+    max-width: 680px;
+    color: #334155;
+    line-height: 1.8;
+    margin-bottom: 28px;
+}
+
+.hero-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+    gap: 18px;
+}
+
+.hero-meta div {
+    background: #f8fafc;
+    border-radius: 18px;
+    padding: 18px 20px;
+}
+
+.hero-meta strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.hero-meta span {
+    color: #475569;
+}
+
+@media (max-width: 1000px) {
+    .student-page {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto 1fr;
+    }
+
+    .site-header,
+    .apps-bar,
+    .main-area,
+    .side-menu {
+        grid-column: 1 / -1;
+    }
+
+    .side-menu {
+        padding: 20px;
+    }
+
+    .main-area {
+        padding: 18px;
+    }
+
+    .hero-meta {
+        grid-template-columns: 1fr;
+    }
+}
+
+.home-button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #14caa0;
+    color: #00332a;
+    padding: 18px 16px;
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(20, 202, 160, 0.18);
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.home-icon {
+    font-size: 20px;
+}
+
+.home-text {
+    font-size: 1.05rem;
+}
+
+.side-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.side-list details {
+    background: #f3f4f6;
+    border-radius: 10px;
+    padding: 10px 14px 12px;
+    border: 1px solid transparent;
+}
+
+.side-list details[open] {
+    border-color: #d1d5db;
+    background: #ffffff;
+}
+
+.side-list summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    color: #0f1724;
+    padding: 8px 0;
+}
+
+.side-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.side-list summary::after {
+    content: '▾';
+    transition: transform 0.2s ease;
+    color: #6b7280;
+}
+
+.side-list details[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #0f1724;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    transition: background 0.2s ease;
+}
+
+.submenu a:hover {
+    background: #eef2f7;
+}
+
+.site-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    background: yellow;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo-u {
+    width: 76px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #07395b;
+    background: linear-gradient(90deg,#0b67a3 100%);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1.25rem;
+}
+
+.main-area{
+    grid-column: 2;
+    grid-row: 3;
+    padding: 28px;
+    background: #ffffff;
+}
+
+.blank-area{
+    min-height: 520px;
+    border-radius: 8px;
+}
+
+@media (max-width: 900px){
+    .student-page{grid-template-columns: 1fr; grid-template-rows: auto auto 1fr}
+    .side-menu{grid-row:auto;padding:12px}
+    .site-header{grid-column:1}
+    .apps-bar{grid-column:1}
+    .main-area{grid-column:1}
+}

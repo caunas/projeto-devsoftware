@@ -1,0 +1,88 @@
+<!--
+AUTOR: LEONARDO
+-->
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="<http://www.thymeleaf.org>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início do Aluno</title>
+    <link rel="stylesheet" th:href="@{css/inicioAluno.css}">
+</head>
+<body>
+    <div class="student-page">
+        <header class="site-header">
+            <div class="header-left">
+                <div class="logo-u">
+                    <img src="../img/logo-novaluz.png" alt="Logo Colégio Novaluz">
+                </div>
+                <div class="brand-text">
+                    <div class="school-name">COLÉGIO NOVALUZ</div>
+                    <div class="school-tag">Educação que ilumina o futuro</div>
+                </div>
+            </div>
+            <div class="header-title">Portal do Aluno</div>
+            <div class="user-avatar">😊</div>
+        </header>
+
+        <div class="apps-bar">
+            <div class="apps-inner">
+                <div class="app">Sistema do Aluno</div>
+                <div class="app">Boletim</div>
+                <div class="app">Financeiro</div>
+                <div class="app">Centro de Carreiras</div>
+                <div class="app">Eventos</div>
+            </div>
+        </div>
+
+        <aside class="side-menu">
+            <div class="home-button">
+                <span class="home-icon">🏠</span>
+                <span class="home-text">Home</span>
+            </div>
+
+            <div class="side-list">
+                <details>
+                    <summary>Calendários</summary>
+                    <div class="submenu">
+                        <a href="#">Calendário Acadêmico</a>
+                        <a href="#">Horário de aulas</a>
+                        <a href="#">Datas de prova</a>
+                    </div>
+                </details>
+                <details>
+                    <summary>Encontre sua sala de aula</summary>
+                    <div class="submenu">
+                        <a href="#">Bloco A</a>
+                        <a href="#">Bloco B</a>
+                        <a href="#">Mapa do campus</a>
+                    </div>
+                </details>
+                <details>
+                    <summary>Biblioteca</summary>
+                    <div class="submenu">
+                        <a href="#">Catálogo</a>
+                        <a href="#">Empréstimos</a>
+                        <a href="#">Sala de estudos</a>
+                    </div>
+                </details>
+                <details>
+                    <summary>Laboratórios</summary>
+                    <div class="submenu">
+                        <a href="#">Horários</a>
+                        <a href="#">Reservas</a>
+                        <a href="#">Projetos</a>
+                    </div>
+                </details>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <section class="hero-card">
+                <img src="../img/aviso.png" alt="Aviso Colégio Novaluz" class="hero-image">
+            </section>
+        </main>
+    </div>
+    <script th:src="@{js/inicioAluno.js}"></script>
+</body>
+</html>
