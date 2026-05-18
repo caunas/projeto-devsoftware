@@ -28,7 +28,8 @@ public class AlunoController {
             Optional<Aluno> aluno = alunoRepository.findById(id);
             return ResponseEntity.ok(aluno);
         } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(e.getMessage());
         }
     }
 
@@ -44,7 +45,9 @@ public class AlunoController {
             alunoRepository.delete(aluno);
             return ResponseEntity.ok(aluno);
         } catch(Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(
+                    HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
         }
     }
 
