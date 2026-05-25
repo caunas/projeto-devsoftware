@@ -1,6 +1,7 @@
 package com.jpmovel.projetosistemaescolar.api.controller;
 
 import com.jpmovel.projetosistemaescolar.api.domain.Aluno;
+import com.jpmovel.projetosistemaescolar.api.erros.ResourceNotFoundException;
 import com.jpmovel.projetosistemaescolar.api.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ public class AlunoController {
         return alunoRepository.findAll();
     }
 
+    //Recomedo outro
+    /*
     @GetMapping("{id}")
     public ResponseEntity<? extends Object >buscarPorId(@RequestParam Long id){
         try{
@@ -31,13 +34,26 @@ public class AlunoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(e.getMessage());
         }
-    }
+    }*/
 
+    //acredito que fica melhor
+    @GetMapping("/{id}")
+    public ResponseEntity<Aluno> buscarPorId(@PathVariable Long id) {
+        // Trocado de findAllByAtivoTrue(id) para findByIdAndAtivoTrue(id)
+        Aluno aluno = alunoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno com ID: " + id + " não encontrado ou inativo"));
+
+        return ResponseEntity.ok(aluno);
+    }
+    //NOVO ALUNO
     @PostMapping("/novo")
     public Aluno novoAluno(@RequestBody Aluno aluno){
         return alunoRepository.save(aluno);
     }
 
+    //APAGAR ALUNO
+    //Retirando para Evitar Problemas com o Banco de Dados
+    /*
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> excluirPorId(@PathVariable Long id){
         try {
@@ -49,6 +65,20 @@ public class AlunoController {
                     HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
         }
+    }
+     */
+    @DeleteMapping("/deletar/{id}") //acho que não precisa "/deletar" dá uma olhada dps
+    public ResponseEntity<Void> excluirPorId(@PathVariable Long id) {
+        // 1. Busca o aluno
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno com ID " + id + " não encontrado"));
+
+        // 2. apenas desativamos
+        aluno.setAtivo(false);
+        alunoRepository.save(aluno);
+
+        // 3. Retornamos 204 No Content (sucesso sem corpo de resposta)
+        return ResponseEntity.noContent().build();
     }
 
 }
