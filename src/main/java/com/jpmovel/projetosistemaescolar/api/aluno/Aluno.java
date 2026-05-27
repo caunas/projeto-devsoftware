@@ -1,4 +1,4 @@
-package com.jpmovel.projetosistemaescolar.api.domain;
+package com.jpmovel.projetosistemaescolar.api.aluno;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,5 +1,7 @@
-package com.jpmovel.projetosistemaescolar.api.domain;
+package com.jpmovel.projetosistemaescolar.api.atividade;
 
+import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;
+import com.jpmovel.projetosistemaescolar.api.professor.Professor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

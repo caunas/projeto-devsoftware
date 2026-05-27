@@ -1,15 +1,11 @@
-package com.jpmovel.projetosistemaescolar.api.controller;
+package com.jpmovel.projetosistemaescolar.api.aluno;
 
-import com.jpmovel.projetosistemaescolar.api.domain.Aluno;
 import com.jpmovel.projetosistemaescolar.api.erros.ResourceNotFoundException;
-import com.jpmovel.projetosistemaescolar.api.repository.AlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/aluno")
