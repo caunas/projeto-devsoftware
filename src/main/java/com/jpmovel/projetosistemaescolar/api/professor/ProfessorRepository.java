@@ -1,9 +1,6 @@
-package com.jpmovel.projetosistemaescolar.api.repository;
+package com.jpmovel.projetosistemaescolar.api.professor;
 
-import com.jpmovel.projetosistemaescolar.api.domain.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.jpmovel.projetosistemaescolar.api.domain.Aluno;
 
 import java.util.List;
 import java.util.Optional;

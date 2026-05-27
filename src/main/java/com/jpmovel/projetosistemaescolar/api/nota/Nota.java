@@ -1,5 +1,6 @@
-package com.jpmovel.projetosistemaescolar.api.domain;
+package com.jpmovel.projetosistemaescolar.api.nota;
 
+import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,5 @@
-package com.jpmovel.projetosistemaescolar.api.controller;
+package com.jpmovel.projetosistemaescolar.api.professor;
 
-import com.jpmovel.projetosistemaescolar.api.domain.Professor;
-import com.jpmovel.projetosistemaescolar.api.repository.ProfessorRepository;
 import com.jpmovel.projetosistemaescolar.api.erros.ResourceNotFoundException; // Ajuste o pacote se necessário
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

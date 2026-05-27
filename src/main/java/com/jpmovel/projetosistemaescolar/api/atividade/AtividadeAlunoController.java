@@ -1,12 +1,10 @@
-package com.jpmovel.projetosistemaescolar.api.controller;
+package com.jpmovel.projetosistemaescolar.api.atividade;
 
-import com.jpmovel.projetosistemaescolar.api.domain.Aluno;
-import com.jpmovel.projetosistemaescolar.api.domain.AtividadeAluno;
-import com.jpmovel.projetosistemaescolar.api.domain.Professor;
+import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;
+import com.jpmovel.projetosistemaescolar.api.professor.Professor;
 import com.jpmovel.projetosistemaescolar.api.erros.ResourceNotFoundException;
-import com.jpmovel.projetosistemaescolar.api.repository.AlunoRepository;
-import com.jpmovel.projetosistemaescolar.api.repository.AtividadeAlunoRepository;
-import com.jpmovel.projetosistemaescolar.api.repository.ProfessorRepository;
+import com.jpmovel.projetosistemaescolar.api.aluno.AlunoRepository;
+import com.jpmovel.projetosistemaescolar.api.professor.ProfessorRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
