@@ -1,88 +1,191 @@
-<!--
-AUTOR: LEONARDO
--->
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="<http://www.thymeleaf.org>">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início do Aluno</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Universidade Nova Luz</title>
     <link rel="stylesheet" th:href="@{css/inicioAluno.css}">
 </head>
-<body>
-    <div class="student-page">
-        <header class="site-header">
-            <div class="header-left">
-                <div class="logo-u">
-                    <img src="../img/logo-novaluz.png" alt="Logo Colégio Novaluz">
-                </div>
-                <div class="brand-text">
-                    <div class="school-name">COLÉGIO NOVALUZ</div>
-                    <div class="school-tag">Educação que ilumina o futuro</div>
-                </div>
-            </div>
-            <div class="header-title">Portal do Aluno</div>
-            <div class="user-avatar">😊</div>
-        </header>
 
-        <div class="apps-bar">
-            <div class="apps-inner">
-                <div class="app">Sistema do Aluno</div>
-                <div class="app">Boletim</div>
-                <div class="app">Financeiro</div>
-                <div class="app">Centro de Carreiras</div>
-                <div class="app">Eventos</div>
-            </div>
+<body>
+
+  <header>
+    <div class="logo">
+
+      <div class="logo-box">
+        NL
+      </div>
+
+      <div class="logo-text">
+        <h1>Universidade Nova Luz</h1>
+        <p>Portal do Aluno</p>
+      </div>
+
+    </div>
+
+    <div class="top-buttons">
+      <button>Perfil</button>
+      <button>Configurações</button>
+      <button>Ajuda</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- MENU -->
+    <aside class="sidebar">
+
+      <button class="menu-btn">
+        📚 Atividades dos Professores
+      </button>
+
+      <button class="menu-btn">
+        📅 Calendário
+      </button>
+
+      <button class="menu-btn">
+        📝 Boletim
+      </button>
+
+      <button class="menu-btn">
+        🎓 Carteira de Estudante
+      </button>
+
+      <button class="menu-btn">
+        🏛️ Serviços da Faculdade
+      </button>
+
+      <button class="menu-btn">
+        💼 Centro de Carreiras
+      </button>
+
+      <button class="menu-btn">
+        💳 Financeiro
+      </button>
+
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="content">
+
+      <!-- CARROSSEL -->
+      <div class="carousel">
+
+        <div class="slide active">
+          <h2>Bem-vindo à Nova Luz ✨</h2>
+
+          <p>
+            Acesse suas atividades, acompanhe o calendário acadêmico e fique por dentro de todos os avisos da universidade.
+          </p>
         </div>
 
-        <aside class="side-menu">
-            <div class="home-button">
-                <span class="home-icon">🏠</span>
-                <span class="home-text">Home</span>
-            </div>
+        <div class="slide">
+          <h2>Semana Acadêmica 📘</h2>
 
-            <div class="side-list">
-                <details>
-                    <summary>Calendários</summary>
-                    <div class="submenu">
-                        <a href="#">Calendário Acadêmico</a>
-                        <a href="#">Horário de aulas</a>
-                        <a href="#">Datas de prova</a>
-                    </div>
-                </details>
-                <details>
-                    <summary>Encontre sua sala de aula</summary>
-                    <div class="submenu">
-                        <a href="#">Bloco A</a>
-                        <a href="#">Bloco B</a>
-                        <a href="#">Mapa do campus</a>
-                    </div>
-                </details>
-                <details>
-                    <summary>Biblioteca</summary>
-                    <div class="submenu">
-                        <a href="#">Catálogo</a>
-                        <a href="#">Empréstimos</a>
-                        <a href="#">Sala de estudos</a>
-                    </div>
-                </details>
-                <details>
-                    <summary>Laboratórios</summary>
-                    <div class="submenu">
-                        <a href="#">Horários</a>
-                        <a href="#">Reservas</a>
-                        <a href="#">Projetos</a>
-                    </div>
-                </details>
-            </div>
-        </aside>
+          <p>
+            Participe de palestras, workshops e eventos exclusivos organizados pela Universidade Nova Luz.
+          </p>
+        </div>
 
-        <main class="main-area">
-            <section class="hero-card">
-                <img src="../img/aviso.png" alt="Aviso Colégio Novaluz" class="hero-image">
-            </section>
-        </main>
-    </div>
-    <script th:src="@{js/inicioAluno.js}"></script>
+        <div class="slide">
+          <h2>Centro de Carreiras 🚀</h2>
+
+          <p>
+            Descubra vagas de estágio, oportunidades profissionais e programas de desenvolvimento.
+          </p>
+        </div>
+
+        <div class="carousel-buttons">
+          <button onclick="prevSlide()">❮</button>
+          <button onclick="nextSlide()">❯</button>
+        </div>
+
+      </div>
+
+      <!-- CARDS -->
+      <section class="cards">
+
+        <div class="card">
+          <h3>Atividades</h3>
+
+          <p>
+            Consulte tarefas, provas e materiais enviados pelos professores.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Calendário</h3>
+
+          <p>
+            Veja datas importantes, avaliações e eventos acadêmicos.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Financeiro</h3>
+
+          <p>
+            Acompanhe mensalidades, boletos e negociações financeiras.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Carteira Digital</h3>
+
+          <p>
+            Utilize sua identificação estudantil diretamente pelo portal.
+          </p>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script>
+
+    let currentSlide = 0;
+
+    const slides = document.querySelectorAll(".slide");
+
+    function showSlide(index){
+
+      slides.forEach(slide => {
+        slide.classList.remove("active");
+      });
+
+      slides[index].classList.add("active");
+    }
+
+    function nextSlide(){
+
+      currentSlide++;
+
+      if(currentSlide >= slides.length){
+        currentSlide = 0;
+      }
+
+      showSlide(currentSlide);
+    }
+
+    function prevSlide(){
+
+      currentSlide--;
+
+      if(currentSlide < 0){
+        currentSlide = slides.length - 1;
+      }
+
+      showSlide(currentSlide);
+    }
+
+    // troca automática
+    setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+  </script>
+
 </body>
 </html>
