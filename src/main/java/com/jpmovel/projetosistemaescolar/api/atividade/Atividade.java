@@ -1,18 +1,18 @@
 package com.jpmovel.projetosistemaescolar.api.atividade;
 
-import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;
 import com.jpmovel.projetosistemaescolar.api.professor.Professor;
+import com.jpmovel.projetosistemaescolar.api.turma.Turma;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "atividades_alunos")
+@Table(name = "atividades")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AtividadeAluno {
+public class Atividade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,23 +23,19 @@ public class AtividadeAluno {
     private String titulo;
 
     @Column(columnDefinition = "TEXT")
-    private String descricao;
-
-    private Double nota; // O doble permite começar sem nota
+    private String description;
 
     @Column(nullable = false)
-    private LocalDateTime dataCriacao = LocalDateTime.now(); // Grava a hora que o professor criou
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    private LocalDateTime dataEntrega;
+    private LocalDateTime dataLimiteEntrega;
 
     // RELACIONAMENTOS
-    //Talvez depois tenha que mudar pra muitos pra muitos
-
     @ManyToOne
-    @JoinColumn(name = "aluno_id", nullable = false)
-    private Aluno aluno; // Vincula a atividade a um Aluno específico
+    @JoinColumn(name = "turma_id", nullable = false)
+    private Turma turma; // O professor passa para a TURMA inteira
 
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
-    private Professor professor; // Vincula ao Professor que criou
+    private Professor professor;
 }

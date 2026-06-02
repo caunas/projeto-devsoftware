@@ -1,4 +1,4 @@
-package com.jpmovel.projetosistemaescolar.api.professor;
+package com.jpmovel.projetosistemaescolar.api.coordenador;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -6,11 +6,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-@Table(name = "professores") // Plural é uma convenção comum para tabelas
+@Table(name = "coordenadores")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Professor {
+public class Coordenador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,9 +28,6 @@ public class Professor {
     @Column(unique = true)
     private String email;
 
+    @Column(nullable = false)
     private boolean ativo = true;
-
-    @com.fasterxml.jackson.annotation.JsonIgnore // Impede loop infinito no JSON
-    @ManyToMany(mappedBy = "professores")
-    private java.util.Set<com.jpmovel.projetosistemaescolar.api.turma.Turma> turmas = new java.util.HashSet<>();
 }
