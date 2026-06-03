@@ -1,36 +1,23 @@
 package com.jpmovel.projetosistemaescolar.api.professor;
 
+import com.jpmovel.projetosistemaescolar.api.usuario.Usuario;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
-@Table(name = "professores") // Plural é uma convenção comum para tabelas
+@Table(name = "professores")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Professor {
+public class Professor extends Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @NotBlank(message = "O departamento é obrigatório")
+    private String departamento;
 
-    @NotBlank(message = "O nome é obrigatório")
-    @Column(nullable = false, length = 150)
-    private String nome;
-
-    @NotBlank(message = "A matrícula é obrigatória")
-    @Column(unique = true, nullable = false, length = 20)
-    private String matricula;
-
-    @Email(message = "E-mail inválido")
-    @Column(unique = true)
-    private String email;
+    @NotBlank(message = "A especialidade é obrigatória")
+    private String Black; // ou especialidade
 
     private boolean ativo = true;
-
-    @com.fasterxml.jackson.annotation.JsonIgnore // Impede loop infinito no JSON
-    @ManyToMany(mappedBy = "professores")
-    private java.util.Set<com.jpmovel.projetosistemaescolar.api.turma.Turma> turmas = new java.util.HashSet<>();
 }
