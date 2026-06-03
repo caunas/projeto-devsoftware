@@ -1,5 +1,7 @@
 package com.jpmovel.projetosistemaescolar.api.turma;
 
+import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;               // Adicionado o import do Aluno
+import com.jpmovel.projetosistemaescolar.api.aluno.AlunoRepository;     // Adicionado o import do AlunoRepository
 import com.jpmovel.projetosistemaescolar.api.professor.Professor;
 import com.jpmovel.projetosistemaescolar.api.professor.ProfessorRepository;
 import com.jpmovel.projetosistemaescolar.api.erros.ResourceNotFoundException;
@@ -19,6 +21,9 @@ public class TurmaController {
 
     @Autowired
     private ProfessorRepository professorRepository;
+
+    @Autowired
+    private AlunoRepository alunoRepository; // Injetado para podermos buscar o aluno
 
     @GetMapping
     public List<Turma> listarTodas() {
@@ -41,6 +46,22 @@ public class TurmaController {
                 .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado"));
 
         turma.getProfessores().add(professor);
+        turmaRepository.save(turma);
+
+        return ResponseEntity.ok(turma);
+    }
+
+    // Função nova eu Copiei a lógica de cima para colocar o Aluno na Turma
+    @PostMapping("/{turmaId}/alunos/{alunoId}")
+    public ResponseEntity<Turma> vincularAluno(@PathVariable Long turmaId, @PathVariable Long alunoId) {
+        Turma turma = turmaRepository.findByIdAndAtivoTrue(turmaId)
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada"));
+
+        Aluno aluno = alunoRepository.findByIdAndAtivoTrue(alunoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno não encontrado"));
+
+        // Adiciona o aluno na lista de alunos daquela turma
+        turma.getAlunos().add(aluno);
         turmaRepository.save(turma);
 
         return ResponseEntity.ok(turma);

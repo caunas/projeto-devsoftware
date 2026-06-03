@@ -1,5 +1,6 @@
 package com.jpmovel.projetosistemaescolar.api.turma;
 
+import com.jpmovel.projetosistemaescolar.api.aluno.Aluno;
 import com.jpmovel.projetosistemaescolar.api.professor.Professor;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -33,4 +34,12 @@ public class Turma {
             inverseJoinColumns = @JoinColumn(name = "professor_id")
     )
     private Set<Professor> professores = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "turma_aluno",
+            joinColumns = @JoinColumn(name = "turma_id"),
+            inverseJoinColumns = @JoinColumn(name = "aluno_id")
+    )
+    private Set<Aluno> alunos = new HashSet<>();
 }
