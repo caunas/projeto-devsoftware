@@ -1,33 +1,20 @@
 package com.jpmovel.projetosistemaescolar.api.coordenador;
 
+import com.jpmovel.projetosistemaescolar.api.usuario.Usuario;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
 @Table(name = "coordenadores")
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Coordenador {
+public class Coordenador extends Usuario {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @NotBlank(message = "O setor é obrigatório")
+    private String setor;
 
-    @NotBlank(message = "O nome é obrigatório")
-    @Column(nullable = false, length = 150)
-    private String nome;
-
-    @NotBlank(message = "A matrícula é obrigatória")
-    @Column(unique = true, nullable = false, length = 20)
-    private String matricula;
-
-    @Email(message = "E-mail inválido")
-    @Column(unique = true)
-    private String email;
-
-    @Column(nullable = false)
     private boolean ativo = true;
 }
