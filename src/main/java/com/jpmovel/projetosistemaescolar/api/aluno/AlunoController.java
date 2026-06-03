@@ -41,7 +41,7 @@ public class AlunoController {
 
         return ResponseEntity.ok(aluno);
     }
-    //NOVO ALUNO
+    //NOVO ALUNO.
     @PostMapping("/novo")
     public Aluno novoAluno(@RequestBody Aluno aluno){
         return alunoRepository.save(aluno);

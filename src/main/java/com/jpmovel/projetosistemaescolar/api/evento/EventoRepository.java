@@ -1,0 +1,10 @@
+package com.jpmovel.projetosistemaescolar.api.evento;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+
+public interface EventoRepository extends JpaRepository<Evento, Long> {
+
+    // Lista todos os eventos ordenados pela data em que vão acontecer (mais próximos primeiro)
+    List<Evento> findAllByOrderByDataEventoAsc();
+}
