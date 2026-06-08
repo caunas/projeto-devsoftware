@@ -1,4 +1,4 @@
-package com.jpmovel.projetosistemaescolar.usuario;
+package com.jpmovel.projetosistemaescolar.auth;
 
 public enum Role {
     ROLE_ALUNO,

@@ -1,6 +1,6 @@
 package com.jpmovel.projetosistemaescolar.aluno;
 
-import com.jpmovel.projetosistemaescolar.usuario.Role;
+import com.jpmovel.projetosistemaescolar.auth.Role;
 import com.jpmovel.projetosistemaescolar.erros.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

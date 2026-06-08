@@ -1,6 +1,6 @@
 package com.jpmovel.projetosistemaescolar.coordenador;
 
-import com.jpmovel.projetosistemaescolar.usuario.Usuario;
+import com.jpmovel.projetosistemaescolar.auth.Usuario;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

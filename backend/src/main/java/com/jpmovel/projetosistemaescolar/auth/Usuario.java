@@ -1,4 +1,4 @@
-package com.jpmovel.projetosistemaescolar.usuario;
+package com.jpmovel.projetosistemaescolar.auth;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

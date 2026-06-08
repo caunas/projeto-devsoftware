@@ -1,6 +1,6 @@
 package com.jpmovel.projetosistemaescolar.aluno;
 
-import com.jpmovel.projetosistemaescolar.usuario.Usuario;
+import com.jpmovel.projetosistemaescolar.auth.Usuario;
 import com.jpmovel.projetosistemaescolar.turma.Turma;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
