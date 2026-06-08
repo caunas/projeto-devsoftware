@@ -88,11 +88,12 @@
             flex: 1;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(135deg, #4f7cff, #3b5fd0);
+            background-image: url(../../assets/fotologin.jpg);
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px;
+            background-size: cover;
         }
         
         .image-placeholder {

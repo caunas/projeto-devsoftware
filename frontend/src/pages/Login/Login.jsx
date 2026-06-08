@@ -1,5 +1,6 @@
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import fotologin from '../../assets/fotologin.jpg';
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -58,8 +59,12 @@ export const Login = () => {
             </div>
 
             <div className="image-panel">
+                {/* 
                 <div className="image-placeholder">
                     <span>Imagem grande aqui</span>
+                </div>
+                */}
+                <div className="image-portal">
                 </div>
             </div>
         </div>
