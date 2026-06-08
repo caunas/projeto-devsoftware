@@ -55,7 +55,7 @@ public class AtividadeController {
 
         // BUSCA EM LOTE: Pega todos os alunos ativos que pertencem a essa turma específica
         List<Aluno> alunosDaTurma = alunoRepository.findAllByAtivoTrue().stream()
-                .filter(aluno -> aluno.getTurma() != null && aluno.getTurma().getId().equals(turma.getId()))
+                .filter(aluno -> aluno.getTurmas() != null && aluno.getTurmas().equals(turma.getId()))
                 .toList();
 
         // Para cada aluno da turma, gera uma "folha de entrega" em branco na tabela atividades_alunos
