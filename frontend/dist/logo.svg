@@ -1,4 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">Nova Luz Faculdade</title>
+  <desc id="desc">Icone minimalista da Faculdade Nova Luz</desc>
   <rect width="96" height="96" rx="22" fill="#0b3d91"/>
   <path d="M20 36 48 22l28 14-28 14-28-14Z" fill="#ffc107"/>
   <path d="M30 46v16c0 5 8 10 18 10s18-5 18-10V46L48 55 30 46Z" fill="#ffffff"/>
