@@ -5,6 +5,7 @@ import com.jpmovel.projetosistemaescolar.erros.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -16,11 +17,13 @@ public class AlunoController {
     private AlunoRepository alunoRepository;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
     public List<Aluno> listarTodos(){
         return alunoRepository.findAll();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<Aluno> buscarPorId(@PathVariable Long id) {
         Aluno aluno = alunoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aluno com ID: " + id + " não encontrado ou inativo"));
@@ -30,6 +33,7 @@ public class AlunoController {
 
     //Mudança para colocar a Role do aluno quando salvar
     @PostMapping("/novo")
+    @PreAuthorize("hasRole('COORDENADOR')")
     public Aluno novoAluno(@RequestBody Aluno aluno){
         aluno.setRole(Role.ROLE_ALUNO); // O sistema preenche sozinho com base no UML
         aluno.setAtivo(true);           // Começa ativo por padrão
@@ -37,6 +41,7 @@ public class AlunoController {
     }
 
     @DeleteMapping("/deletar/{id}")
+    @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<Void> excluirPorId(@PathVariable Long id) {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Aluno com ID " + id + " não encontrado"));

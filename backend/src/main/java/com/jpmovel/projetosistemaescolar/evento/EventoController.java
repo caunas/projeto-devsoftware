@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -20,13 +21,13 @@ public class EventoController {
     @Autowired
     private CoordenadorRepository coordenadorRepository;
 
-    // 1. PORTAL PÚBLICO: Lista todos os eventos para qualquer visitante
+    // 1. PORTAL PÚBLICO: Sem @PreAuthorize para permitir acesso de qualquer visitante
     @GetMapping
     public List<Evento> listarTodos() {
         return eventoRepository.findAllByOrderByDataEventoAsc();
     }
 
-    // 2. PORTAL PÚBLICO: Busca os detalhes de um evento específico
+    // 2. PORTAL PÚBLICO: Sem @PreAuthorize para permitir acesso de qualquer visitante
     @GetMapping("/{id}")
     public ResponseEntity<Evento> buscarPorId(@PathVariable Long id) {
         Evento evento = eventoRepository.findById(id)
@@ -36,6 +37,7 @@ public class EventoController {
 
     // 3. Cria um novo evento no mural é Exclusivo do coordenador
     @PostMapping
+    @PreAuthorize("hasRole('COORDENADOR')") // 🔐 Apenas coordenador cria
     public ResponseEntity<Evento> criarEvento(@RequestBody @Valid Evento evento) {
         // Valida se o coordenador que está criando o evento existe e está ativo
         Coordenador coordenador = coordenadorRepository.findByIdAndAtivoTrue(evento.getCoordenador().getId())
@@ -47,8 +49,9 @@ public class EventoController {
         return ResponseEntity.status(201).body(salvo);
     }
 
-    // 4.  Remove um evento do mural Exclusivo do coordenador
+    // 4. Remove um evento do mural Exclusivo do coordenador
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('COORDENADOR')") // 🔐 Apenas coordenador deleta
     public ResponseEntity<Void> excluirEvento(@PathVariable Long id) {
         if (!eventoRepository.existsById(id)) {
             throw new ResourceNotFoundException("Evento não encontrado para exclusão. ID: " + id);

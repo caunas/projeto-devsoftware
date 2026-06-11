@@ -33,6 +33,8 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	annotationProcessor 'org.projectlombok:lombok'
+    //Securyt boot
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     //SE DER ALGUM PROBLEMA É FACIL DE ACHAR
     implementation 'io.jsonwebtoken:jjwt-api:0.12.6'

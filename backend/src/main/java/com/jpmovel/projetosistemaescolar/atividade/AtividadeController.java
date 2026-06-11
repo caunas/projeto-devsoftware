@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,8 +38,9 @@ public class AtividadeController {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    // 1. Professor lança a atividade para a TURMA (Cria as entregas individuais em lote)
+    // 1. Apenas o PROFESSOR pode lançar uma atividade para a TURMA
     @PostMapping
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<Atividade> lancarAtividade(@RequestBody @Valid Atividade atividade) {
         // Valida se a turma existe e está ativa
         Turma turma = turmaRepository.findByIdAndAtivoTrue(atividade.getTurma().getId())
@@ -70,8 +72,9 @@ public class AtividadeController {
         return ResponseEntity.status(201).body(atividadeSalva);
     }
 
-    // 2. Aluno envia a resposta para a sua entrega específica
+    // 2. Apenas o ALUNO pode enviar a resposta para a sua entrega específica
     @PatchMapping("/entregas/{entregaId}/responder")
+    @PreAuthorize("hasRole('ALUNO')")
     public ResponseEntity<AtividadeAluno> responderAtividade(@PathVariable Long entregaId, @RequestBody String resposta) {
         // Busca o registro individual da resposta do aluno
         AtividadeAluno entrega = atividadeAlunoRepository.findById(entregaId)
@@ -89,8 +92,9 @@ public class AtividadeController {
         return ResponseEntity.ok(entregaRespondida);
     }
 
-    // 3. Professor corrige e dá a nota para a entrega de um aluno específico
+    // 3. Apenas o PROFESSOR corrige e dá a nota para a entrega de um aluno específico
     @PatchMapping("/entregas/{entregaId}/nota")
+    @PreAuthorize("hasRole('PROFESSOR')")
     public ResponseEntity<AtividadeAluno> darNota(@PathVariable Long entregaId, @RequestParam Double nota) {
         // Valida a nota do sistema escolar
         if (nota < 0 || nota > 10) {
@@ -106,8 +110,9 @@ public class AtividadeController {
         return ResponseEntity.ok(entregaCorrigida);
     }
 
-    // 4. Busca todas as entregas (atividades) de um aluno específico
+    // 4. Alunos (as suas próprias), Professores e Coordenadores podem listar as entregas de um aluno
     @GetMapping("/aluno/{alunoId}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR', 'ALUNO')")
     public ResponseEntity<List<AtividadeAluno>> listarPorAluno(@PathVariable Long alunoId) {
         List<AtividadeAluno> atividadesDoAluno = atividadeAlunoRepository.findByAlunoId(alunoId);
         return ResponseEntity.ok(atividadesDoAluno);

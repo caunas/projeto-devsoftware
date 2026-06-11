@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,8 +22,9 @@ public class FaturaController {
     @Autowired
     private AlunoRepository alunoRepository;
 
-    // 1. Gera a fatura
+    // 1. Apenas o COORDENADOR (ou setor financeiro) gera cobranças
     @PostMapping
+    @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<Fatura> gerarFatura(@RequestBody @Valid Fatura fatura) {
         // Valida se o aluno existe e está ativo na escola
         Aluno aluno = alunoRepository.findByIdAndAtivoTrue(fatura.getAluno().getId())
@@ -35,8 +37,9 @@ public class FaturaController {
         return ResponseEntity.status(201).body(novaFatura);
     }
 
-    // 2.Paga a fatura
+    // 2. Apenas o COORDENADOR dá baixa ou confirma o pagamento da fatura
     @PatchMapping("/{id}/pagar")
+    @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<Fatura> pagarFatura(@PathVariable Long id) {
         Fatura fatura = faturaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Fatura não encontrada com ID: " + id));
@@ -53,8 +56,9 @@ public class FaturaController {
         return ResponseEntity.ok(faturaPaga);
     }
 
-    // 3. Ver o financeiro/historico de pagamentos
+    // 3. O ALUNO vê as suas próprias faturas e o COORDENADOR consulta o histórico geral
     @GetMapping("/aluno/{alunoId}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'ALUNO')")
     public ResponseEntity<List<Fatura>> listarPorAluno(@PathVariable Long alunoId) {
         List<Fatura> faturas = faturaRepository.findByAlunoId(alunoId);
         return ResponseEntity.ok(faturas);
