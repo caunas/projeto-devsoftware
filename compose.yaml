@@ -43,3 +43,4 @@ services:
 networks:
   projeto-devsoftware:
     driver: bridge
+
