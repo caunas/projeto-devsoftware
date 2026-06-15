@@ -1,135 +1,171 @@
 import { useCallback, useMemo, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+
 import { AuthContext } from "./AuthContextValue";
+import { loginRequest } from "../../services/authService";
 
-const STORAGE_KEY = "portal-auth-user";
-
-/**
- * Versão da sessão mockada.
- *
- * Ela invalida sessões antigas salvas no localStorage. Na integração JWT,
- * remova esta constante e valide sessão usando /auth/me ou refresh token.
- */
-const AUTH_SESSION_VERSION = "mock-auth-v1";
+const USER_STORAGE_KEY = "portal-auth-user";
+const TOKEN_STORAGE_KEY = "portal-auth-token";
 
 /**
- * Credenciais fictícias usadas somente durante o desenvolvimento.
+ * Normaliza as roles do backend para o formato esperado pelo frontend.
  *
- * Integração backend:
- * - remover este objeto;
- * - enviar username/password/role para POST /auth/login;
- * - salvar accessToken, refreshToken e user retornados pela API.
+ * Backend:
+ * - ROLE_ALUNO
+ * - ROLE_PROFESSOR
+ * - ROLE_COORDENADOR
+ *
+ * Frontend:
+ * - aluno
+ * - professor
+ * - coordenador
  */
-const MOCK_CREDENTIALS = {
-  password: "Asdas",
-  username: "Asdas",
-};
+function normalizeRole(role) {
+  switch (role) {
+    case "ROLE_ALUNO":
+      return "aluno";
 
-const roleNames = {
-  aluno: "Aluno",
-  professor: "Professor",
-  coordenador: "Coordenador",
-};
+    case "ROLE_PROFESSOR":
+      return "professor";
+
+    case "ROLE_COORDENADOR":
+      return "coordenador";
+
+    default:
+      return null;
+  }
+}
 
 export function AuthProvider({ children }) {
   /**
    * Estado do usuário autenticado.
    *
-   * Hoje vem do localStorage para simular persistência.
-   * Com JWT, carregue tokens e valide o usuário em /auth/me antes
-   * de liberar as rotas protegidas.
+   * Na integração JWT, os dados básicos do usuário são
+   * restaurados do localStorage para manter a sessão.
    */
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem(STORAGE_KEY);
+    const storedUser = localStorage.getItem(USER_STORAGE_KEY);
 
     if (!storedUser) {
       return null;
     }
 
     try {
-      const parsedUser = JSON.parse(storedUser);
-
-      if (parsedUser.sessionVersion !== AUTH_SESSION_VERSION) {
-        localStorage.removeItem(STORAGE_KEY);
-        return null;
-      }
-
-      return parsedUser;
+      return JSON.parse(storedUser);
     } catch {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(USER_STORAGE_KEY);
       return null;
     }
   });
 
   /**
-   * No mock a inicialização é síncrona.
-   * Na API real, altere para useState(true) e finalize como false
-   * somente após validar token, refresh token ou ausência de sessão.
+   * Atualmente a inicialização é síncrona.
+   *
+   * Caso futuramente exista refresh token ou endpoint
+   * de validação de sessão, altere para um fluxo assíncrono.
    */
   const isInitializing = false;
 
   /**
-   * Realiza login fictício.
+   * Realiza login utilizando o backend.
    *
-   * Contrato futuro:
-   * const { accessToken, refreshToken, user } = await authService.login(...)
+   * Fluxo:
+   * - envia email e senha
+   * - recebe JWT
+   * - decodifica claims
+   * - monta objeto user
+   * - persiste token e usuário
    */
-  const login = useCallback(({ password, role, username }) => {
-    if (username !== MOCK_CREDENTIALS.username || password !== MOCK_CREDENTIALS.password) {
-      throw new Error("Usuario ou senha invalidos.");
-    }
+  const login = useCallback(async ({ username, password }) => {
+    const response = await loginRequest(username, password);
+
+    console.log("RESPONSE COMPLETA: ", response);
+
+    const token = response.data.acessToken;  
+
+    console.log("TOKEN RECEBIDO: ", token);
+    console.log("TIPO: ", typeof token);
+
+    const payload = jwtDecode(token);
+
+    console.log(payload)
 
     const nextUser = {
-      email: `${username || role}@novaluz.edu.br`,
-      id: `${role}-2026`,
-      name: username || roleNames[role],
-      role,
-      sessionVersion: AUTH_SESSION_VERSION,
+      id: payload.id,
+      name: payload.nome,
+      email: payload.sub,
+      role: normalizeRole(payload.role),
     };
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+
+    localStorage.setItem(
+      USER_STORAGE_KEY,
+      JSON.stringify(nextUser)
+    );
+
     setUser(nextUser);
+
     return nextUser;
   }, []);
 
   /**
    * Encerra a sessão local.
    *
-   * Com backend real, chame POST /auth/logout antes de limpar os tokens locais.
+   * Caso exista logout no backend futuramente,
+   * chamar o endpoint antes de limpar os dados locais.
    */
   const logout = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(USER_STORAGE_KEY);
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+
     setUser(null);
   }, []);
 
   /**
-   * Atualiza dados básicos do usuário no mock.
+   * Atualiza dados básicos do usuário localmente.
    *
-   * Com backend real, substitua por PATCH /users/me e use a resposta da API
-   * para atualizar o estado local.
+   * Futuramente substituir por PATCH /users/me.
    */
-  const updateProfile = useCallback((data) => {
-    const nextUser = { ...user, ...data };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
-    setUser(nextUser);
-    return nextUser;
-  }, [user]);
+  const updateProfile = useCallback(
+    (data) => {
+      const nextUser = { ...user, ...data };
+
+      localStorage.setItem(
+        USER_STORAGE_KEY,
+        JSON.stringify(nextUser)
+      );
+
+      setUser(nextUser);
+
+      return nextUser;
+    },
+    [user]
+  );
 
   /**
    * Simula alteração de senha.
    *
-   * Com backend real, substitua por PATCH /users/me/password.
+   * Futuramente substituir por PATCH /users/me/password.
    */
-  const changePassword = useCallback(({ currentPassword, newPassword }) => {
-    if (!currentPassword || !newPassword) {
-      throw new Error("Preencha a senha atual e a nova senha.");
-    }
+  const changePassword = useCallback(
+    ({ currentPassword, newPassword }) => {
+      if (!currentPassword || !newPassword) {
+        throw new Error(
+          "Preencha a senha atual e a nova senha."
+        );
+      }
 
-    if (newPassword.length < 6) {
-      throw new Error("A nova senha deve ter pelo menos 6 caracteres.");
-    }
+      if (newPassword.length < 6) {
+        throw new Error(
+          "A nova senha deve ter pelo menos 6 caracteres."
+        );
+      }
 
-    return true;
-  }, []);
+      return true;
+    },
+    []
+  );
 
   const value = useMemo(
     () => ({
@@ -141,8 +177,19 @@ export function AuthProvider({ children }) {
       updateProfile,
       user,
     }),
-    [changePassword, isInitializing, login, logout, updateProfile, user]
+    [
+      changePassword,
+      isInitializing,
+      login,
+      logout,
+      updateProfile,
+      user,
+    ]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
