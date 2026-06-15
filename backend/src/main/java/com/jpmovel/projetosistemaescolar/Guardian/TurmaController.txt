@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
+import java.util.HashSet;
 
 @RestController
-@RequestMapping("/turmas")
+@RequestMapping("/api/turmas")
 public class TurmaController {
 
     @Autowired
@@ -33,12 +34,46 @@ public class TurmaController {
         return turmaRepository.findAllByAtivoTrue();
     }
 
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Turma> buscarPorId(@PathVariable Long id) {
+        Turma turma = turmaRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com ID: " + id));
+        return ResponseEntity.ok(turma);
+    }
+
     // 2. Apenas o Coordenador pode abrir/criar uma nova turma
     @PostMapping
-    @PreAuthorize("hasRole('COORDENADOR')")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
     public ResponseEntity<Turma> criar(@RequestBody @Valid Turma turma) {
+        turma.setAtivo(true);
+        if (turma.getProfessores() == null) {
+            turma.setProfessores(new HashSet<>());
+        }
+        if (turma.getAlunos() == null) {
+            turma.setAlunos(new HashSet<>());
+        }
         Turma salva = turmaRepository.save(turma);
         return ResponseEntity.status(201).body(salva);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Turma> atualizar(@PathVariable Long id, @RequestBody @Valid Turma dados) {
+        Turma turma = turmaRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com ID: " + id));
+        turma.setNome(dados.getNome());
+        return ResponseEntity.ok(turmaRepository.save(turma));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Void> desativar(@PathVariable Long id) {
+        Turma turma = turmaRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada com ID: " + id));
+        turma.setAtivo(false);
+        turmaRepository.save(turma);
+        return ResponseEntity.noContent().build();
     }
 
     // 3. Apenas o Coordenador pode atribuir um Professor a uma Turma

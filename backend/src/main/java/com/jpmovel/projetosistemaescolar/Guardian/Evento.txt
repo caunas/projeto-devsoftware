@@ -1,5 +1,6 @@
 package com.jpmovel.projetosistemaescolar.evento;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jpmovel.projetosistemaescolar.coordenador.Coordenador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -34,10 +35,18 @@ public class Evento {
     private String local;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     // RELACIONAMENTO
     @ManyToOne
     @JoinColumn(name = "coordenador_id", nullable = false)
     private Coordenador coordenador;
+
+    @PrePersist
+    private void preencherDataCriacao() {
+        if (dataCriacao == null) {
+            dataCriacao = LocalDateTime.now();
+        }
+    }
 }

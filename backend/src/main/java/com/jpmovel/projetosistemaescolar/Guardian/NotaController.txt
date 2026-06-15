@@ -20,6 +20,21 @@ public class NotaController {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    @GetMapping("/todas")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public List<Nota> listarTodas() {
+        return notaRepository.findAll();
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Nota> atualizar(@PathVariable Long id, @RequestParam double nota) {
+        Nota registro = notaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nota não encontrada"));
+        registro.setNota(nota);
+        return ResponseEntity.ok(notaRepository.save(registro));
+    }
+
     // 1. Alunos (ver boletim), Professores e Coordenadores podem listar as notas
     @GetMapping("")
     @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR', 'ALUNO')")
@@ -50,7 +65,7 @@ public class NotaController {
 
     // 3. Apenas o COORDENADOR pode deletar um registro de nota do histórico
     @DeleteMapping("/deletar/{id}")
-    @PreAuthorize("hasRole('COORDENADOR')")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
     public ResponseEntity<?> excluirPorId(@PathVariable Long id){
         try {
             Nota nota = notaRepository.findById(id).get();

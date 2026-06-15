@@ -59,6 +59,14 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+tasks.register('guardianAudit', JavaExec) {
+	group = 'verification'
+	description = 'Compara os arquivos Java protegidos com os gabaritos do pacote Guardian.'
+	dependsOn classes
+	classpath = sourceSets.main.runtimeClasspath
+	mainClass = 'com.jpmovel.projetosistemaescolar.Guardian.AvastAntViruz'
+}
+
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test

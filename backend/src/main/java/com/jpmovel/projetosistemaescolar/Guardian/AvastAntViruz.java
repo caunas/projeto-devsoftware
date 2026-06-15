@@ -49,7 +49,16 @@ public class AvastAntViruz {
 
                 // --- PACOTE TURMA ---
                 Map.entry("Turma", "src/main/java/com/jpmovel/projetosistemaescolar/turma/Turma.java"),
-                Map.entry("TurmaController", "src/main/java/com/jpmovel/projetosistemaescolar/turma/TurmaController.java")
+                Map.entry("TurmaController", "src/main/java/com/jpmovel/projetosistemaescolar/turma/TurmaController.java"),
+
+                // --- AUTENTICACAO E SEGURANCA ---
+                Map.entry("Usuario", "src/main/java/com/jpmovel/projetosistemaescolar/auth/Usuario.java"),
+                Map.entry("Role", "src/main/java/com/jpmovel/projetosistemaescolar/auth/Role.java"),
+                Map.entry("AuthController", "src/main/java/com/jpmovel/projetosistemaescolar/auth/AuthController.java"),
+                Map.entry("AccountController", "src/main/java/com/jpmovel/projetosistemaescolar/auth/AccountController.java"),
+                Map.entry("TokenService", "src/main/java/com/jpmovel/projetosistemaescolar/auth/TokenService.java"),
+                Map.entry("JwtAuthenticationFilter", "src/main/java/com/jpmovel/projetosistemaescolar/auth/JwtAuthenticationFilter.java"),
+                Map.entry("SecurityConfig", "src/main/java/com/jpmovel/projetosistemaescolar/config/SecurityConfig.java")
         );
 
         boolean projetoInviolado = true;
@@ -80,19 +89,23 @@ public class AvastAntViruz {
             System.out.println("Por favor, revise as diferenças apontadas acima.");
         }
         System.out.println("====================================================");
+
+        if (!projetoInviolado) {
+            throw new IllegalStateException("A auditoria Guardian detectou divergencias de integridade.");
+        }
     }
 
     // 5. MÉTODO QUE FAZ A COMPARAÇÃO LINHA POR LINHA
     private static boolean verificarIntegridade(String nomeClasse, String caminhoRealJava) throws IOException {
         // Aponta para os arquivos .txt que você vai colocar na mesma pasta da auditoria
-        String caminhoGabarito = "src/main/java/com/jpmovel/projetosistemaescolar/auditoria/" + nomeClasse + ".txt";
+        String caminhoGabarito = "src/main/java/com/jpmovel/projetosistemaescolar/Guardian/" + nomeClasse + ".txt";
 
         Path pathGabarito = Paths.get(caminhoGabarito);
         Path pathReal = Paths.get(caminhoRealJava);
 
         // Se o arquivo de texto ou o .java não existirem, avisa no console
         if (!Files.exists(pathGabarito)) {
-            System.out.println("⚠️ Gabarito .txt não encontrado na pasta auditoria: " + caminhoGabarito);
+            System.out.println("⚠️ Gabarito .txt não encontrado na pasta Guardian: " + caminhoGabarito);
             return true;
         }
         if (!Files.exists(pathReal)) {

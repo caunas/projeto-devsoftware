@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
-@RequestMapping("/coordenadores")
+@RequestMapping("/api/coordenadores")
 public class CoordenadorController {
 
     @Autowired
