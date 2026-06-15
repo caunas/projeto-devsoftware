@@ -1,5 +1,7 @@
 package com.jpmovel.projetosistemaescolar.turma;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.jpmovel.projetosistemaescolar.aluno.Aluno;
 import com.jpmovel.projetosistemaescolar.professor.Professor;
 import jakarta.persistence.*;
@@ -23,6 +25,7 @@ public class Turma {
     @Column(nullable = false, unique = true, length = 50)
     private String nome;
 
+    @JsonSetter(nulls = Nulls.SKIP)
     private boolean ativo = true;
 
     // Relacionamento Muitos para Muitos com Professor

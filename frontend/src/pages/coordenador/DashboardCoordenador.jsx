@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { coordenadorPages } from "../../data/portalPages";
+import ApiPortalPage from "../../components/ui/ApiPortalPage";
 
 function DashboardCoordenador() {
-  return <PortalPage page={coordenadorPages.dashboard} />;
+  return <ApiPortalPage page="dashboard" />;
 }
 
 export default DashboardCoordenador;

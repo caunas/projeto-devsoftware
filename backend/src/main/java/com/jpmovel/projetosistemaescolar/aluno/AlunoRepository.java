@@ -12,4 +12,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
 
     // Mostra somente aqueles que estão estudando
     List<Aluno> findAllByAtivoTrue();
+
+    Optional<Aluno> findByEmail(String email);
 }

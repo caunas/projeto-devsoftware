@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { professorPages } from "../../data/portalPages";
+import AtividadeManager from "./AtividadeManager";
 
 function Atividades() {
-  return <PortalPage page={professorPages.atividades} />;
+  return <AtividadeManager />;
 }
 
 export default Atividades;

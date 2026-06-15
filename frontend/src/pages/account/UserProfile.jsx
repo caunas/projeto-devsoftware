@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useUI } from "../../hooks/useUI";
+import { getApiErrorMessage } from "../../services/api";
+import { portalApi } from "../../services/portalService";
 
 function UserProfile() {
   const { updateProfile, user } = useAuth();
   const { notify } = useUI();
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
+  const [isSaving, setIsSaving] = useState(false);
 
-  function handleSubmit(event) {
+  useEffect(() => {
+    portalApi.me().then((profile) => {
+      setName(profile.nome);
+      setEmail(profile.email);
+    }).catch((error) => notify(getApiErrorMessage(error, "Nao foi possivel carregar o perfil."), "error"));
+  }, [notify]);
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    updateProfile({ email, name });
-    notify("Perfil atualizado com sucesso.", "success");
+    setIsSaving(true);
+    try {
+      await updateProfile({ name });
+      notify("Perfil atualizado com sucesso.", "success");
+    } catch (error) {
+      notify(getApiErrorMessage(error, "Nao foi possivel atualizar o perfil."), "error");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
@@ -33,9 +50,9 @@ function UserProfile() {
           </div>
           <div className="form-group">
             <label htmlFor="profile-email">E-mail</label>
-            <input id="profile-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+            <input id="profile-email" type="email" value={email} readOnly />
           </div>
-          <button type="submit">Salvar perfil</button>
+          <button type="submit" disabled={isSaving}>{isSaving ? "Salvando..." : "Salvar perfil"}</button>
         </form>
       </article>
     </section>

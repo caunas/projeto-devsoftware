@@ -57,7 +57,8 @@ export function getApiErrorMessage(error, fallbackMessage) {
   return (
     error.response?.data?.message ||
     error.response?.data?.error ||
-    (error.response?.status === 401 ? "Email ou senha invalidos." : null) ||
+    (error.response?.status === 401 ? "Sessao expirada ou credenciais invalidas." : null) ||
+    (error.response?.status === 403 ? "Seu usuario nao possui permissao para esta operacao." : null) ||
     (error.code === "ERR_NETWORK" ? "Nao foi possivel conectar a API local." : null) ||
     fallbackMessage
   );

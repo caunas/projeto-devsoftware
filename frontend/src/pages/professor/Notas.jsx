@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { professorPages } from "../../data/portalPages";
+import NotaManager from "./NotaManager";
 
 function Notas() {
-  return <PortalPage page={professorPages.notas} />;
+  return <NotaManager />;
 }
 
 export default Notas;

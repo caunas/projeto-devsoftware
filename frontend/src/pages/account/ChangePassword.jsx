@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import { useUI } from "../../hooks/useUI";
+import { getApiErrorMessage } from "../../services/api";
 
 function ChangePassword() {
   const { changePassword } = useAuth();
@@ -10,7 +11,7 @@ function ChangePassword() {
   const [confirmation, setConfirmation] = useState("");
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setError("");
 
@@ -19,14 +20,15 @@ function ChangePassword() {
         throw new Error("A confirmacao precisa ser igual a nova senha.");
       }
 
-      changePassword({ currentPassword, newPassword });
+      await changePassword({ currentPassword, newPassword });
       setCurrentPassword("");
       setNewPassword("");
       setConfirmation("");
       notify("Senha alterada com sucesso.", "success");
     } catch (caughtError) {
-      setError(caughtError.message);
-      notify(caughtError.message, "error");
+      const message = getApiErrorMessage(caughtError, caughtError.message || "Nao foi possivel alterar a senha.");
+      setError(message);
+      notify(message, "error");
     }
   }
 

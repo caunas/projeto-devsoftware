@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "./AuthContextValue";
 import { loginRequest } from "../../services/authService";
 import { TOKEN_STORAGE_KEY } from "../../services/api";
+import { updateAccount, updatePassword } from "../../services/portalService";
 
 const USER_STORAGE_KEY = "portal-auth-user";
 
@@ -54,15 +55,23 @@ export function AuthProvider({ children }) {
    */
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
 
-    if (!storedUser) {
+    if (!storedUser || !storedToken) {
       return null;
     }
 
     try {
+      const payload = jwtDecode(storedToken);
+      if (!payload.exp || payload.exp * 1000 <= Date.now()) {
+        localStorage.removeItem(USER_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        return null;
+      }
       return JSON.parse(storedUser);
     } catch {
       localStorage.removeItem(USER_STORAGE_KEY);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
       return null;
     }
   });
@@ -135,8 +144,9 @@ export function AuthProvider({ children }) {
    * Futuramente substituir por PATCH /users/me.
    */
   const updateProfile = useCallback(
-    (data) => {
-      const nextUser = { ...user, ...data };
+    async (data) => {
+      const profile = await updateAccount({ nome: data.name });
+      const nextUser = { ...user, name: profile.nome, email: profile.email };
 
       localStorage.setItem(
         USER_STORAGE_KEY,
@@ -156,7 +166,7 @@ export function AuthProvider({ children }) {
    * Futuramente substituir por PATCH /users/me/password.
    */
   const changePassword = useCallback(
-    ({ currentPassword, newPassword }) => {
+    async ({ currentPassword, newPassword }) => {
       if (!currentPassword || !newPassword) {
         throw new Error(
           "Preencha a senha atual e a nova senha."
@@ -169,6 +179,7 @@ export function AuthProvider({ children }) {
         );
       }
 
+      await updatePassword({ senhaAtual: currentPassword, novaSenha: newPassword });
       return true;
     },
     []

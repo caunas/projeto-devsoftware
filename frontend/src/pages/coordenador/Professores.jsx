@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { coordenadorPages } from "../../data/portalPages";
+import CrudManager from "../../components/ui/CrudManager";
 
 function Professores() {
-  return <PortalPage page={coordenadorPages.professores} />;
+  return <CrudManager resource="professores" title="Professores" description="Gerencie os professores ativos e seus dados de acesso." />;
 }
 
 export default Professores;

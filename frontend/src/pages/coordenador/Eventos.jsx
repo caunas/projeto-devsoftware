@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { coordenadorPages } from "../../data/portalPages";
+import CrudManager from "../../components/ui/CrudManager";
 
 function Eventos() {
-  return <PortalPage page={coordenadorPages.eventos} />;
+  return <CrudManager resource="eventos" title="Eventos" description="Publique e mantenha os eventos exibidos pelo sistema." />;
 }
 
 export default Eventos;

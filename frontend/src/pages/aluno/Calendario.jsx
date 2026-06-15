@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { alunoPages } from "../../data/portalPages";
+import ApiPortalPage from "../../components/ui/ApiPortalPage";
 
 function Calendario() {
-  return <PortalPage page={alunoPages.calendario} />;
+  return <ApiPortalPage page="calendario" />;
 }
 
 export default Calendario;

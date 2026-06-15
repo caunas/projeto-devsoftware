@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { alunoPages } from "../../data/portalPages";
+import ApiPortalPage from "../../components/ui/ApiPortalPage";
 
 function Atividades() {
-  return <PortalPage page={alunoPages.atividades} />;
+  return <ApiPortalPage page="atividades" />;
 }
 
 export default Atividades;
