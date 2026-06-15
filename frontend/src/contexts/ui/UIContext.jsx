@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { UIContext } from "./UIContextValue";
 
 export function UIProvider({ children }) {
@@ -10,7 +10,7 @@ export function UIProvider({ children }) {
    *
    * Use em chamadas de API para feedback de sucesso, erro ou informação.
    */
-  function notify(message, type = "info") {
+  const notify = useCallback((message, type = "info") => {
     const id = crypto.randomUUID();
     setNotifications((currentNotifications) => [
       ...currentNotifications,
@@ -22,17 +22,17 @@ export function UIProvider({ children }) {
         currentNotifications.filter((notification) => notification.id !== id)
       );
     }, 4200);
-  }
+  }, []);
 
   /**
    * Remove manualmente uma notificação.
    * As notificações também expiram automaticamente após alguns segundos.
    */
-  function dismissNotification(id) {
+  const dismissNotification = useCallback((id) => {
     setNotifications((currentNotifications) =>
       currentNotifications.filter((notification) => notification.id !== id)
     );
-  }
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -42,7 +42,7 @@ export function UIProvider({ children }) {
       notify,
       setGlobalLoading,
     }),
-    [isGlobalLoading, notifications]
+    [dismissNotification, isGlobalLoading, notifications, notify]
   );
 
   return <UIContext.Provider value={value}>{children}</UIContext.Provider>;

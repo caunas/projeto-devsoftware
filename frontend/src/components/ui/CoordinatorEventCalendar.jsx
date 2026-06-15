@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../../hooks/useAuth";
 import { useUI } from "../../hooks/useUI";
+import { getApiErrorMessage } from "../../services/api";
+import { createEvento, getEventos, mapEvento } from "../../services/eventService";
 
 const monthNames = [
   "Janeiro",
@@ -24,16 +27,18 @@ function formatKey(year, month, day) {
 
 function CoordinatorEventCalendar({ initialEvents = [], title }) {
   const { notify } = useUI();
+  const { user } = useAuth();
   const today = new Date();
   /*
    * Integracao backend:
    * - carregar eventos com GET /coordinators/me/events?month=<1-12>&year=<ano>;
    * - manter date em ISO curto (YYYY-MM-DD) para agrupar os blocos por dia.
    */
-  const [month, setMonth] = useState(5);
+  const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
-  const [selectedDate, setSelectedDate] = useState("2026-06-13");
+  const [selectedDate, setSelectedDate] = useState(formatKey(today.getFullYear(), today.getMonth(), today.getDate()));
   const [events, setEvents] = useState(initialEvents);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     description: "",
     location: "",
@@ -62,6 +67,36 @@ function CoordinatorEventCalendar({ initialEvents = [], title }) {
   );
 
   const selectedEvents = eventsByDate[selectedDate] || [];
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadEvents() {
+      setIsLoading(true);
+
+      try {
+        const data = await getEventos();
+
+        if (isActive) {
+          setEvents(data.map(mapEvento));
+        }
+      } catch (error) {
+        if (isActive) {
+          notify(getApiErrorMessage(error, "Nao foi possivel carregar os eventos."), "error");
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadEvents();
+
+    return () => {
+      isActive = false;
+    };
+  }, [notify]);
 
   if (!title) {
     return null;
@@ -97,7 +132,7 @@ function CoordinatorEventCalendar({ initialEvents = [], title }) {
    * - substituir por POST /coordinators/me/events;
    * - enviar date, title, description e location.
    */
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
 
     if (!formData.title.trim() || !formData.description.trim() || !formData.location.trim()) {
@@ -105,17 +140,25 @@ function CoordinatorEventCalendar({ initialEvents = [], title }) {
       return;
     }
 
-    setEvents((currentEvents) => [
-      ...currentEvents,
-      {
+    setIsLoading(true);
+
+    try {
+      const createdEvent = await createEvento({
+        coordinatorId: user.id,
         date: selectedDate,
-        description: formData.description,
-        location: formData.location,
-        title: formData.title,
-      },
-    ]);
-    setFormData({ description: "", location: "", title: "" });
-    notify("Evento publicado com sucesso.", "success");
+        description: formData.description.trim(),
+        location: formData.location.trim(),
+        title: formData.title.trim(),
+      });
+
+      setEvents((currentEvents) => [...currentEvents, mapEvento(createdEvent)]);
+      setFormData({ description: "", location: "", title: "" });
+      notify("Evento publicado com sucesso.", "success");
+    } catch (error) {
+      notify(getApiErrorMessage(error, "Nao foi possivel publicar o evento."), "error");
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -155,7 +198,7 @@ function CoordinatorEventCalendar({ initialEvents = [], title }) {
               placeholder="Digite a localizacao"
             />
           </div>
-          <button type="submit">Publicar evento</button>
+          <button type="submit" disabled={isLoading}>{isLoading ? "Salvando..." : "Publicar evento"}</button>
         </form>
       </section>
 

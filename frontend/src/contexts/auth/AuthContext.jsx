@@ -3,9 +3,9 @@ import { jwtDecode } from "jwt-decode";
 
 import { AuthContext } from "./AuthContextValue";
 import { loginRequest } from "../../services/authService";
+import { TOKEN_STORAGE_KEY } from "../../services/api";
 
 const USER_STORAGE_KEY = "portal-auth-user";
-const TOKEN_STORAGE_KEY = "portal-auth-token";
 
 /**
  * Normaliza as roles do backend para o formato esperado pelo frontend.
@@ -29,6 +29,15 @@ function normalizeRole(role) {
       return "professor";
 
     case "ROLE_COORDENADOR":
+      return "coordenador";
+
+    case "ALUNO":
+      return "aluno";
+
+    case "PROFESSOR":
+      return "professor";
+
+    case "COORDENADOR":
       return "coordenador";
 
     default:
@@ -76,27 +85,36 @@ export function AuthProvider({ children }) {
    * - monta objeto user
    * - persiste token e usuário
    */
-  const login = useCallback(async ({ username, password }) => {
-  const response = await loginRequest(username, password);
+  const login = useCallback(async ({ expectedRole, username, password }) => {
+    const response = await loginRequest(username, password);
 
-  const token = response.data.acessToken;
+    const token = response.acessToken;
 
-  const payload = jwtDecode(token);
+    const payload = jwtDecode(token);
+    const role = normalizeRole(payload.role);
 
-  const nextUser = {
-    id: payload.id,
-    name: payload.nome,
-    email: payload.sub,
-    role: normalizeRole(payload.role),
-  };
+    if (!role) {
+      throw new Error("Perfil de usuario nao reconhecido pela aplicacao.");
+    }
 
-  localStorage.setItem(TOKEN_STORAGE_KEY, token);
-  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+    if (expectedRole && role !== expectedRole) {
+      throw new Error("O perfil selecionado nao corresponde ao usuario informado.");
+    }
 
-  setUser(nextUser);
+    const nextUser = {
+      id: payload.id,
+      name: payload.nome,
+      email: payload.sub,
+      role,
+    };
 
-  return nextUser;
-});
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+
+    setUser(nextUser);
+
+    return nextUser;
+  }, []);
 
   /**
    * Encerra a sessão local.
