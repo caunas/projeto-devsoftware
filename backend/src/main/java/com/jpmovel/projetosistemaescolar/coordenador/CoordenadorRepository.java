@@ -11,4 +11,7 @@ public interface CoordenadorRepository extends JpaRepository<Coordenador, Long> 
 
     // Lista apenas os coordenadores que estão trabalhando atualmente
     List<Coordenador> findAllByAtivoTrue();
+
+    // Retorna um Optional de Coordenador em uma busca por email
+    Optional<Coordenador> findByEmail(String email);
 }
