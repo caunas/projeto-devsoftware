@@ -1,12 +1,14 @@
 package com.jpmovel.projetosistemaescolar.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+@Configuration
 public class CorsConfig {
 
     @Bean
@@ -14,14 +16,18 @@ public class CorsConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of("*")
         );
 
         configuration.setAllowedMethods(
-                List.of("")
+                List.of("*")
         );
 
-        configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(
+                List.of("*")
+        );
+
+        configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 

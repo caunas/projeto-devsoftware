@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
-@RequestMapping("/eventos")
+@RequestMapping("/api/eventos")
 public class EventoController {
 
     @Autowired

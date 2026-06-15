@@ -6,6 +6,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfigurationSource;
+import com.jpmovel.projetosistemaescolar.config.CorsConfig.*;
 
 @Configuration
 @EnableWebSecurity
@@ -13,9 +15,10 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   CorsConfigurationSource corsConfigurationSource) throws Exception {
         http
-                .cors(cors -> {}) // sem isso, frontend nn consegue consummir a api
+                .cors(cors -> cors.configurationSource(corsConfigurationSource)) // sem isso, frontend nn consegue consummir a api
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // Público

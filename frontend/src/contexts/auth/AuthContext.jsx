@@ -77,37 +77,26 @@ export function AuthProvider({ children }) {
    * - persiste token e usuário
    */
   const login = useCallback(async ({ username, password }) => {
-    const response = await loginRequest(username, password);
+  const response = await loginRequest(username, password);
 
-    console.log("RESPONSE COMPLETA: ", response);
+  const token = response.data.acessToken;
 
-    const token = response.data.acessToken;  
+  const payload = jwtDecode(token);
 
-    console.log("TOKEN RECEBIDO: ", token);
-    console.log("TIPO: ", typeof token);
+  const nextUser = {
+    id: payload.id,
+    name: payload.nome,
+    email: payload.sub,
+    role: normalizeRole(payload.role),
+  };
 
-    const payload = jwtDecode(token);
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
 
-    console.log(payload)
+  setUser(nextUser);
 
-    const nextUser = {
-      id: payload.id,
-      name: payload.nome,
-      email: payload.sub,
-      role: normalizeRole(payload.role),
-    };
-
-    localStorage.setItem(TOKEN_STORAGE_KEY, token);
-
-    localStorage.setItem(
-      USER_STORAGE_KEY,
-      JSON.stringify(nextUser)
-    );
-
-    setUser(nextUser);
-
-    return nextUser;
-  }, []);
+  return nextUser;
+});
 
   /**
    * Encerra a sessão local.

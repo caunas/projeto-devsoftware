@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/atividades")
+@RequestMapping("/api/atividades")
 public class AtividadeController {
 
     @Autowired

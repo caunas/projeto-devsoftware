@@ -14,7 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
-@RequestMapping("/turmas")
+@RequestMapping("/api/turmas")
 public class TurmaController {
 
     @Autowired
