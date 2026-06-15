@@ -17,8 +17,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll() // Público
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/eventos/**").permitAll() // LIBERA TODOS OS GETs DE EVENTOS PARA VISITANTES!
+                        // Público
+                        .requestMatchers(
+                                "/api/auth/login").permitAll()
+                        // LIBERA TODOS OS GETs DE EVENTOS PARA VISITANTES!
+                        .requestMatchers(
+                                org.springframework.http.HttpMethod.GET,
+                                "/eventos/**").permitAll()
+                        // Libera a interface do Swagger para ser acessado (DESATIVAR no INPROD)
+                        .requestMatchers("/swagger-ui.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs").permitAll()
                         .anyRequest().authenticated() // O resto (POST, DELETE, etc) exige login e vai cair no @PreAuthorize
                 );
 
