@@ -9,6 +9,7 @@ import { USER_PROFILES } from "../../constants/userProfiles";
 import { useAuth } from "../../hooks/useAuth";
 import { useUI } from "../../hooks/useUI";
 import { getPortalPath } from "../../utils/portalPath";
+import { getApiErrorMessage } from "../../services/api";
 
 function Login() {
     const location = useLocation();
@@ -22,41 +23,39 @@ function Login() {
     const [error, setError] = useState("");
 
     /**
-     * Fluxo de login atual:
-     * - valida credenciais mockadas no AuthContext;
-     * - cria sessão local;
-     * - redireciona para a rota protegida compatível com o perfil.
-     *
-     * Integração JWT:
-     * - manter este fluxo visual;
-     * - trocar AuthContext.login por chamada real para POST /auth/login.
+     * Autentica na API, valida o perfil retornado pelo JWT e redireciona
+     * para a rota protegida correspondente.
      */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setGlobalLoading(true);
 
-        window.setTimeout(() => {
-            try {
-                const user = login({ password: senha, role: tipoUsuario, username: usuario });
-                notify(`Bem-vindo, ${user.name}.`, "success");
+        try {
+            const user = await login({
+                expectedRole: tipoUsuario,
+                password: senha,
+                username: usuario,
+            });
 
-                const previousPath = location.state?.from?.pathname;
-                const selectedPortalPath = getPortalPath(tipoUsuario);
+            notify(`Bem-vindo, ${user.name}.`, "success");
 
-                // Evita redirecionar um aluno para rota de professor, por exemplo.
-                const destination = previousPath?.startsWith(selectedPortalPath)
-                    ? previousPath
-                    : selectedPortalPath;
+            const previousPath = location.state?.from?.pathname;
+            const selectedPortalPath = getPortalPath(user.role);
 
-                navigate(destination);
-            } catch (caughtError) {
-                setError(caughtError.message);
-                notify(caughtError.message, "error");
-            } finally {
-                setGlobalLoading(false);
-            }
-        }, 500);
+            // Evita redirecionar um aluno para rota de professor, por exemplo.
+            const destination = previousPath?.startsWith(selectedPortalPath)
+                ? previousPath
+                : selectedPortalPath;
+
+            navigate(destination);
+        } catch (caughtError) {
+            const message = getApiErrorMessage(caughtError, caughtError.message || "Nao foi possivel entrar no portal.");
+            setError(message);
+            notify(message, "error");
+        } finally {
+            setGlobalLoading(false);
+        }
     };
 
     return (
@@ -98,13 +97,13 @@ function Login() {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="usuario">Usuario</label>
+                            <label htmlFor="usuario">Email</label>
                             <input
                                 type="text"
                                 id="usuario"
                                 value={usuario}
                                 onChange={(e) => setUsuario(e.target.value)}
-                                placeholder="Digite seu usuario"
+                                placeholder="Digite seu email"
                                 required
                             />
                         </div>

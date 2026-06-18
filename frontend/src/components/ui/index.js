@@ -1,15 +1,10 @@
-export { default as ActivityPublisher } from "./ActivityPublisher";
 export { default as ActivityList } from "./ActivityList";
 export { default as Agenda } from "./Agenda";
-export { default as CoordinatorEventCalendar } from "./CoordinatorEventCalendar";
 export { default as DataTable } from "./DataTable";
 export { default as EventCarousel } from "./EventCarousel";
-export { default as EventPublisher } from "./EventPublisher";
 export { default as GradeReport } from "./GradeReport";
 export { default as InfoCard } from "./InfoCard";
 export { default as PageHeader } from "./PageHeader";
-export { default as PortalPage } from "./PortalPage";
 export { default as ProfileCard } from "./ProfileCard";
-export { default as ServicesSearch } from "./ServicesSearch";
 export { default as StatCard } from "./StatCard";
 export { default as WeeklyAgenda } from "./WeeklyAgenda";

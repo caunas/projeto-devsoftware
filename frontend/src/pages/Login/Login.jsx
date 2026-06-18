@@ -1,6 +1,5 @@
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
-import fotologin from '../../assets/fotologin.jpg';
 
 export const Login = () => {
     const navigate = useNavigate();

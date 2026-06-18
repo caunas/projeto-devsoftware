@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/atividades")
+@RequestMapping("/api/atividades")
 public class AtividadeController {
 
     @Autowired
@@ -37,6 +37,18 @@ public class AtividadeController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public List<Atividade> listarTodas() {
+        return atividadeRepository.findAllByOrderByDataLimiteEntregaAsc();
+    }
+
+    @GetMapping("/professor/{professorId}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public List<Atividade> listarPorProfessor(@PathVariable Long professorId) {
+        return atividadeRepository.findByProfessorId(professorId);
+    }
 
     // 1. Apenas o PROFESSOR pode lançar uma atividade para a TURMA
     @PostMapping
@@ -70,6 +82,34 @@ public class AtividadeController {
         }
 
         return ResponseEntity.status(201).body(atividadeSalva);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Atividade> atualizar(@PathVariable Long id, @RequestBody @Valid Atividade dados) {
+        Atividade atividade = atividadeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Atividade não encontrada com ID: " + id));
+        Turma turma = turmaRepository.findByIdAndAtivoTrue(dados.getTurma().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Turma não encontrada ou inativa"));
+        Professor professor = professorRepository.findByIdAndAtivoTrue(dados.getProfessor().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado ou inativo"));
+
+        atividade.setTitulo(dados.getTitulo());
+        atividade.setDescription(dados.getDescription());
+        atividade.setDataLimiteEntrega(dados.getDataLimiteEntrega());
+        atividade.setTurma(turma);
+        atividade.setProfessor(professor);
+        return ResponseEntity.ok(atividadeRepository.save(atividade));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('COORDENADOR', 'PROFESSOR')")
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
+        if (!atividadeRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Atividade não encontrada com ID: " + id);
+        }
+        atividadeRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     // 2. Apenas o ALUNO pode enviar a resposta para a sua entrega específica

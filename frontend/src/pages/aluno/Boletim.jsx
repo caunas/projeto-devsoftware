@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { alunoPages } from "../../data/portalPages";
+import ApiPortalPage from "../../components/ui/ApiPortalPage";
 
 function Boletim() {
-  return <PortalPage page={alunoPages.boletim} />;
+  return <ApiPortalPage page="boletim" />;
 }
 
 export default Boletim;

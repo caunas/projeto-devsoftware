@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { coordenadorPages } from "../../data/portalPages";
+import CrudManager from "../../components/ui/CrudManager";
 
 function Turmas() {
-  return <PortalPage page={coordenadorPages.turmas} />;
+  return <CrudManager resource="turmas" title="Turmas" description="Crie, consulte, renomeie e desative turmas." />;
 }
 
 export default Turmas;

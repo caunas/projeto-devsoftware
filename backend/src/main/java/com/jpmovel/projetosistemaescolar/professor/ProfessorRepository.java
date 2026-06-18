@@ -9,4 +9,6 @@ public interface ProfessorRepository extends JpaRepository<Professor, Long> {
     Optional<Professor> findByIdAndAtivoTrue(Long id);
 
     List<Professor> findAllByAtivoTrue();
+
+    Optional<Professor> findByEmail(String email);
 }

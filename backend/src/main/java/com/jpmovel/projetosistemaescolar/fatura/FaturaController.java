@@ -22,6 +22,12 @@ public class FaturaController {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    @GetMapping
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public List<Fatura> listarTodas() {
+        return faturaRepository.findAll();
+    }
+
     // 1. Apenas o COORDENADOR (ou setor financeiro) gera cobranças
     @PostMapping
     @PreAuthorize("hasRole('COORDENADOR')")

@@ -3,9 +3,10 @@ import { jwtDecode } from "jwt-decode";
 
 import { AuthContext } from "./AuthContextValue";
 import { loginRequest } from "../../services/authService";
+import { TOKEN_STORAGE_KEY } from "../../services/api";
+import { updateAccount, updatePassword } from "../../services/portalService";
 
 const USER_STORAGE_KEY = "portal-auth-user";
-const TOKEN_STORAGE_KEY = "portal-auth-token";
 
 /**
  * Normaliza as roles do backend para o formato esperado pelo frontend.
@@ -31,6 +32,15 @@ function normalizeRole(role) {
     case "ROLE_COORDENADOR":
       return "coordenador";
 
+    case "ALUNO":
+      return "aluno";
+
+    case "PROFESSOR":
+      return "professor";
+
+    case "COORDENADOR":
+      return "coordenador";
+
     default:
       return null;
   }
@@ -45,15 +55,23 @@ export function AuthProvider({ children }) {
    */
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem(USER_STORAGE_KEY);
+    const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
 
-    if (!storedUser) {
+    if (!storedUser || !storedToken) {
       return null;
     }
 
     try {
+      const payload = jwtDecode(storedToken);
+      if (!payload.exp || payload.exp * 1000 <= Date.now()) {
+        localStorage.removeItem(USER_STORAGE_KEY);
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        return null;
+      }
       return JSON.parse(storedUser);
     } catch {
       localStorage.removeItem(USER_STORAGE_KEY);
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
       return null;
     }
   });
@@ -76,27 +94,36 @@ export function AuthProvider({ children }) {
    * - monta objeto user
    * - persiste token e usuário
    */
-  const login = useCallback(async ({ username, password }) => {
-  const response = await loginRequest(username, password);
+  const login = useCallback(async ({ expectedRole, username, password }) => {
+    const response = await loginRequest(username, password);
 
-  const token = response.data.acessToken;
+    const token = response.acessToken;
 
-  const payload = jwtDecode(token);
+    const payload = jwtDecode(token);
+    const role = normalizeRole(payload.role);
 
-  const nextUser = {
-    id: payload.id,
-    name: payload.nome,
-    email: payload.sub,
-    role: normalizeRole(payload.role),
-  };
+    if (!role) {
+      throw new Error("Perfil de usuario nao reconhecido pela aplicacao.");
+    }
 
-  localStorage.setItem(TOKEN_STORAGE_KEY, token);
-  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+    if (expectedRole && role !== expectedRole) {
+      throw new Error("O perfil selecionado nao corresponde ao usuario informado.");
+    }
 
-  setUser(nextUser);
+    const nextUser = {
+      id: payload.id,
+      name: payload.nome,
+      email: payload.sub,
+      role,
+    };
 
-  return nextUser;
-});
+    localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser));
+
+    setUser(nextUser);
+
+    return nextUser;
+  }, []);
 
   /**
    * Encerra a sessão local.
@@ -117,8 +144,9 @@ export function AuthProvider({ children }) {
    * Futuramente substituir por PATCH /users/me.
    */
   const updateProfile = useCallback(
-    (data) => {
-      const nextUser = { ...user, ...data };
+    async (data) => {
+      const profile = await updateAccount({ nome: data.name });
+      const nextUser = { ...user, name: profile.nome, email: profile.email };
 
       localStorage.setItem(
         USER_STORAGE_KEY,
@@ -138,7 +166,7 @@ export function AuthProvider({ children }) {
    * Futuramente substituir por PATCH /users/me/password.
    */
   const changePassword = useCallback(
-    ({ currentPassword, newPassword }) => {
+    async ({ currentPassword, newPassword }) => {
       if (!currentPassword || !newPassword) {
         throw new Error(
           "Preencha a senha atual e a nova senha."
@@ -151,6 +179,7 @@ export function AuthProvider({ children }) {
         );
       }
 
+      await updatePassword({ senhaAtual: currentPassword, novaSenha: newPassword });
       return true;
     },
     []

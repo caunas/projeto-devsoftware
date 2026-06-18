@@ -23,33 +23,41 @@ public class AuthController {
     @Autowired private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> efetuarLogin(@RequestBody Map<String, String> dadosLogin) {
-        String email = dadosLogin.get("email");
-        String senha = dadosLogin.get("senha");
+    public ResponseEntity<LoginResponse> efetuarLogin(
+            @RequestBody LoginRequest dadosLogin) {
 
-        // 1. Procura o e-mail nas tabelas do banco
-        Optional<? extends Usuario> usuarioEncontrado = alunoRepository.findAll().stream()
-                .filter(a -> a.getEmail().equals(email)).findFirst();
+        String email = dadosLogin.email();
+        String senha = dadosLogin.senha();
+
+        Optional<? extends Usuario> usuarioEncontrado =
+                alunoRepository.findAll().stream()
+                        .filter(a -> a.getEmail().equals(email))
+                        .findFirst();
 
         if (usuarioEncontrado.isEmpty()) {
             usuarioEncontrado = professorRepository.findAll().stream()
-                    .filter(p -> p.getEmail().equals(email)).findFirst();
+                    .filter(p -> p.getEmail().equals(email))
+                    .findFirst();
         }
+
         if (usuarioEncontrado.isEmpty()) {
             usuarioEncontrado = coordenadorRepository.findAll().stream()
-                    .filter(c -> c.getEmail().equals(email)).findFirst();
+                    .filter(c -> c.getEmail().equals(email))
+                    .findFirst();
         }
 
-        // 2. Valida se achou e se a senha bate
-        if (usuarioEncontrado.isEmpty() || !usuarioEncontrado.get().getSenha().equals(senha)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("E-mail ou senha inválidos.");
+        if (usuarioEncontrado.isEmpty()
+                || !usuarioEncontrado.get().getSenha().equals(senha)) {
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // 3. Se deu certo, gera o Token usando o TokenService
         Usuario usuario = usuarioEncontrado.get();
+
         String token = tokenService.gerarToken(usuario);
 
-        // Retorna o token bonitinho em JSON
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(
+                new LoginResponse(token)
+        );
     }
 }

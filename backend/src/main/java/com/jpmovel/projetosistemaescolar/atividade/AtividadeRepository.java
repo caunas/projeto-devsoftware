@@ -8,4 +8,6 @@ public interface AtividadeRepository extends JpaRepository<Atividade, Long> {
     //List<Atividade> findByAlunoId(Long alunoId);
 
     List<Atividade> findByProfessorId(Long professorId);
+
+    List<Atividade> findAllByOrderByDataLimiteEntregaAsc();
 }

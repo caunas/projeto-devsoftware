@@ -44,6 +44,23 @@ public class ProfessorController {
         return ResponseEntity.status(201).body(salvo);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<Professor> atualizar(@PathVariable Long id, @RequestBody Professor dados) {
+        Professor professor = professorRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Professor não encontrado ou inativo com ID: " + id));
+
+        professor.setNome(dados.getNome());
+        professor.setEmail(dados.getEmail());
+        professor.setDepartamento(dados.getDepartamento());
+        professor.setEspecialidade(dados.getEspecialidade());
+        if (dados.getSenha() != null && !dados.getSenha().isBlank()) {
+            professor.setSenha(dados.getSenha());
+        }
+
+        return ResponseEntity.ok(professorRepository.save(professor));
+    }
+
     // 4. Apenas o Coordenador pode desativar o acesso de um professor
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('COORDENADOR')")

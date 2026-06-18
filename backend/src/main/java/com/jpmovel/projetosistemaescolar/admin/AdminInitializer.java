@@ -3,6 +3,8 @@ package com.jpmovel.projetosistemaescolar.admin;
 import com.jpmovel.projetosistemaescolar.auth.Role;
 import com.jpmovel.projetosistemaescolar.coordenador.Coordenador;
 import com.jpmovel.projetosistemaescolar.coordenador.CoordenadorRepository;
+import com.jpmovel.projetosistemaescolar.professor.Professor;
+import com.jpmovel.projetosistemaescolar.professor.ProfessorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,25 +17,43 @@ public class AdminInitializer implements CommandLineRunner {
     @Autowired
     private CoordenadorRepository coordenadorRepository;
 
+    @Autowired
+    private ProfessorRepository professorRepository;
+
     @Override
     public void run(String... args){
 
         boolean adminExists = coordenadorRepository.findByEmail("admin@sistema.local").isPresent();
 
-        if (adminExists){
-            return;
+        if (!adminExists){
+            Coordenador admin = new Coordenador();
+
+            admin.setNome("Admin");
+            admin.setEmail("admin@sistema.local");
+            admin.setSenha("admin123");
+            admin.setSetor("T.I");
+            admin.setRole(Role.ROLE_COORDENADOR);
+
+            coordenadorRepository.save(admin);
+            System.out.println(">>> DEFAULT ADMIN CREATED!");
         }
 
-        Coordenador admin = new Coordenador();
+        boolean professorExists = professorRepository.findAll().stream()
+                .anyMatch(professor -> "professor@sistema.local".equals(professor.getEmail()));
 
-        admin.setNome("Admin");
-        admin.setEmail("admin@sistema.local");
-        admin.setSenha("admin123"); // PQP, ALTERAR PARA INPROD
-        admin.setSetor("T.I");
-        admin.setRole(Role.ROLE_COORDENADOR);
+        if (!professorExists) {
+            Professor professor = new Professor();
 
-        coordenadorRepository.save(admin);
+            professor.setNome("Professor Padrao");
+            professor.setEmail("professor@sistema.local");
+            professor.setSenha("professor123");
+            professor.setDepartamento("Tecnologia");
+            professor.setEspecialidade("Engenharia de Software");
+            professor.setRole(Role.ROLE_PROFESSOR);
+            professor.setAtivo(true);
 
-        System.out.println(">>> DEFAULT ADMIN CREATED!");
+            professorRepository.save(professor);
+            System.out.println(">>> DEFAULT PROFESSOR CREATED!");
+        }
     }
 }

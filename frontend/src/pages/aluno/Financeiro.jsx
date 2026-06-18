@@ -1,8 +1,7 @@
-import { PortalPage } from "../../components/ui";
-import { alunoPages } from "../../data/portalPages";
+import ApiPortalPage from "../../components/ui/ApiPortalPage";
 
 function Financeiro() {
-  return <PortalPage page={alunoPages.financeiro} />;
+  return <ApiPortalPage page="financeiro" />;
 }
 
 export default Financeiro;

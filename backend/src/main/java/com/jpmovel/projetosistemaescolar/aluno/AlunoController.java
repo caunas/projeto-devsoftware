@@ -40,6 +40,24 @@ public class AlunoController {
         return alunoRepository.save(aluno);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<Aluno> atualizar(@PathVariable Long id, @RequestBody Aluno dados) {
+        Aluno aluno = alunoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno com ID " + id + " não encontrado ou inativo"));
+
+        aluno.setNome(dados.getNome());
+        aluno.setEmail(dados.getEmail());
+        aluno.setMatricula(dados.getMatricula());
+        aluno.setCurso(dados.getCurso());
+        aluno.setSemestre(dados.getSemestre());
+        if (dados.getSenha() != null && !dados.getSenha().isBlank()) {
+            aluno.setSenha(dados.getSenha());
+        }
+
+        return ResponseEntity.ok(alunoRepository.save(aluno));
+    }
+
     @DeleteMapping("/deletar/{id}")
     @PreAuthorize("hasRole('COORDENADOR')")
     public ResponseEntity<Void> excluirPorId(@PathVariable Long id) {

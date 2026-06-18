@@ -49,6 +49,23 @@ public class EventoController {
         return ResponseEntity.status(201).body(salvo);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public ResponseEntity<Evento> atualizarEvento(@PathVariable Long id, @RequestBody @Valid Evento dados) {
+        Evento evento = eventoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Evento não encontrado com ID: " + id));
+        Coordenador coordenador = coordenadorRepository.findByIdAndAtivoTrue(dados.getCoordenador().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Coordenador responsável não encontrado ou inativo"));
+
+        evento.setTitulo(dados.getTitulo());
+        evento.setDescricao(dados.getDescricao());
+        evento.setDataEvento(dados.getDataEvento());
+        evento.setLocal(dados.getLocal());
+        evento.setCoordenador(coordenador);
+
+        return ResponseEntity.ok(eventoRepository.save(evento));
+    }
+
     // 4. Remove um evento do mural Exclusivo do coordenador
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('COORDENADOR')") // 🔐 Apenas coordenador deleta

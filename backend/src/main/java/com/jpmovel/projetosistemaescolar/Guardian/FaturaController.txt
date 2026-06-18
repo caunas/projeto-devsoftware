@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/faturas")
+@RequestMapping("/api/faturas")
 public class FaturaController {
 
     @Autowired
@@ -21,6 +21,12 @@ public class FaturaController {
 
     @Autowired
     private AlunoRepository alunoRepository;
+
+    @GetMapping
+    @PreAuthorize("hasRole('COORDENADOR')")
+    public List<Fatura> listarTodas() {
+        return faturaRepository.findAll();
+    }
 
     // 1. Apenas o COORDENADOR (ou setor financeiro) gera cobranças
     @PostMapping

@@ -1,5 +1,8 @@
 package com.jpmovel.projetosistemaescolar.aluno;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import com.jpmovel.projetosistemaescolar.auth.Usuario;
 import com.jpmovel.projetosistemaescolar.turma.Turma;
 import jakarta.persistence.*;
@@ -25,9 +28,11 @@ public class Aluno extends Usuario {
 
     private int semestre;
 
+    @JsonSetter(nulls = Nulls.SKIP)
     private boolean ativo = true;
 
     // Ajustado para @ManyToMany conforme o diagrama (* <-> *)
     @ManyToMany(mappedBy = "alunos")
+    @JsonIgnore
     private Set<Turma> turmas = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package com.jpmovel.projetosistemaescolar.atividade;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jpmovel.projetosistemaescolar.professor.Professor;
 import com.jpmovel.projetosistemaescolar.turma.Turma;
 import jakarta.persistence.*;
@@ -26,6 +27,7 @@ public class Atividade {
     private String description;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     private LocalDateTime dataLimiteEntrega;
@@ -38,4 +40,11 @@ public class Atividade {
     @ManyToOne
     @JoinColumn(name = "professor_id", nullable = false)
     private Professor professor;
+
+    @PrePersist
+    private void preencherDataCriacao() {
+        if (dataCriacao == null) {
+            dataCriacao = LocalDateTime.now();
+        }
+    }
 }
